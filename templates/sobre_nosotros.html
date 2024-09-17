@@ -1,0 +1,51 @@
+{% extends "base.html" %} {% block title %} Menu principal {% endblock %} {%
+block header %} {{ super() }} {% endblock %} {% block content %}
+
+<center><h1>Nuestro grupo</h1></center>
+<center><h1>Grupo 4</h1></center>
+
+<style>
+  .card_img {
+    max-height: 267px;
+    min-height: 267px;
+  }
+</style>
+<div class="contenedor_empelados">
+  <div class="card">
+    <div class="image-container">
+      <img
+        class="card_img"
+        src="{{ url_for('static', filename='img/me.jpeg') }}"
+      />
+    </div>
+    <h3>Luis Alberto Huaney Lino</h3>
+    <p>Integrante del grupo 4</p>
+    <div class="social-links"></div>
+  </div>
+  <div class="card">
+    <div class="image-container">
+      <img
+        class="card_img"
+        src="{{ url_for('static', filename='img/mike.jpeg') }}"
+      />
+    </div>
+    <h3>Michael steven</h3>
+    <p>Integrante del grupo 4</p>
+    <div class="social-links"></div>
+  </div>
+  <div class="card">
+    <div class="image-container">
+      <img
+        class="card_img"
+        src="{{ url_for('static', filename='img/alexis.jpeg') }}"
+      />
+    </div>
+    <h3>Alexis jimmy</h3>
+    <p>Integrante del grupo 4</p>
+    <div class="social-links"></div>
+  </div>
+
+  <!-- Agrega más tarjetas según sea necesario -->
+</div>
+
+{% endblock %} {% block footer %} {{ super() }} {% endblock %}

@@ -1,0 +1,162 @@
+{% extends "base.html" %} {% block title %} Menu principal {% endblock %} {%
+block header %} {{ super() }} {% endblock %} {% block content %}
+
+<main>
+  <h1>Inicio</h1>
+  <!-- Analyses -->
+  <!-- End of 
+  <div class="analyse">
+    <div class="sales">
+      <div class="status">
+        <div class="info">
+          <h3>Total Sales</h3>
+          <h1>$65,024</h1>
+        </div>
+        <div class="progresss">
+          <svg>
+            <circle cx="38" cy="38" r="36"></circle>
+          </svg>
+          <div class="percentage">
+            <p>+81%</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="visits">
+      <div class="status">
+        <div class="info">
+          <h3>Site Visit</h3>
+          <h1>24,981</h1>
+        </div>
+        <div class="progresss">
+          <svg>
+            <circle cx="38" cy="38" r="36"></circle>
+          </svg>
+          <div class="percentage">
+            <p>-48%</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="searches">
+      <div class="status">
+        <div class="info">
+          <h3>Searches</h3>
+          <h1>14,147</h1>
+        </div>
+        <div class="progresss">
+          <svg>
+            <circle cx="38" cy="38" r="36"></circle>
+          </svg>
+          <div class="percentage">
+            <p>+21%</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+Analyses -->
+
+  <!-- New Users Section -->
+  <div class="new-users">
+    <h2>Integrantes</h2>
+    <div class="user-list">
+      <div class="user">
+        <img src="{{ url_for('static', filename='img/me.jpeg') }}" />
+        <h2>Luis Alberto</h2>
+        <p>Huaney Lino</p>
+      </div>
+      <div class="user">
+        <img src="{{ url_for('static', filename='img/mike.jpeg') }}" />
+        <h2>Michael Steven</h2>
+
+        <p>Rondo Rurush</p>
+      </div>
+
+      <div class="user">
+        <img src="{{ url_for('static', filename='img/alexis.jpeg') }}" />
+        <h2>Alexis Jimmy</h2>
+        <p>Rojas Quiñones</p>
+      </div>
+      <a href="about">
+        <div class="user">
+          <a href="about"> </a>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="70px"
+            height="70px"
+            viewBox="0 0 48 48"
+            fill="none"
+            class=""
+          >
+            <link
+              xmlns=""
+              type="text/css"
+              id="dark-mode"
+              rel="stylesheet"
+              href=""
+            />
+            <style xmlns="" type="text/css" id="dark-mode-сustom-style" />
+            <style
+              xmlns=""
+              type="text/css"
+              id="dark-mode-theme-changer-style"
+            />
+            <rect width="48" height="48" fill="white" fill-opacity="0.01" />
+            <path
+              d="M24 44C35.0457 44 44 35.0457 44 24C44 12.9543 35.0457 4 24 4C12.9543 4 4 12.9543 4 24C4 35.0457 12.9543 44 24 44Z"
+              fill="#2F88FF"
+              stroke="#000000"
+              stroke-width="4"
+              stroke-linejoin="round"
+            />
+            <circle cx="14" cy="24" r="3" fill="white" />
+            <circle cx="24" cy="24" r="3" fill="white" />
+            <circle cx="34" cy="24" r="3" fill="white" />
+          </svg>
+          <h2>+</h2>
+          <a href="about"> Ver Detalles</a>
+        </div>
+      </a>
+    </div>
+  </div>
+  <!-- End of New Users Section -->
+  <div style="al" class="analyse">
+    <div class="sales">
+      <div class="status">
+        <div class="info">
+          <h3>Metodos de ordenamiento</h3>
+          <h1></h1>
+        </div>
+        <div class="progresss">
+          <svg>
+            <circle cx="38" cy="38" r="36"></circle>
+          </svg>
+          <div class="percentage">
+            <p>+9</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="visits">
+      <div class="status">
+        <div class="info">
+          <h3>Metodos de busqueda</h3>
+          <h1></h1>
+        </div>
+        <div class="progresss">
+          <svg>
+            <circle cx="38" cy="38" r="36"></circle>
+          </svg>
+          <div class="percentage">
+            <p>+2</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Recent Orders Table -->
+
+  <!-- End of Recent Orders -->
+</main>
+{% endblock %} {% block footer %} {{ super() }} {% endblock %}

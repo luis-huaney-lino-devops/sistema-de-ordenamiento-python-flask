@@ -1,0 +1,87 @@
+.contenedores_buttons {
+  display: flex;
+  justify-content: space-between; /* Esto añade espacio entre los botones */
+}
+
+.Documents-btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: fit-content;
+  height: 45px;
+  border: none;
+  padding: 0px 15px;
+  border-radius: 5px;
+  background-color: rgb(49, 49, 83);
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.folderContainer {
+  width: 40px;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  position: relative;
+}
+.fileBack {
+  z-index: 1;
+  width: 80%;
+  height: auto;
+}
+.filePage {
+  width: 50%;
+  height: auto;
+  position: absolute;
+  z-index: 2;
+  transition: all 0.3s ease-out;
+}
+.fileFront {
+  width: 85%;
+  height: auto;
+  position: absolute;
+  z-index: 3;
+  opacity: 0.95;
+  transform-origin: bottom;
+  transition: all 0.3s ease-out;
+}
+.text {
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.Documents-btn:hover .filePage {
+  transform: translateY(-5px);
+}
+.Documents-btn:hover {
+  background-color: rgb(58, 58, 94);
+}
+.Documents-btn:active {
+  transform: scale(0.95);
+}
+.Documents-btn:hover .fileFront {
+  transform: rotateX(30deg);
+}
+.contenedores_buttons {
+  display: flex;
+  flex-wrap: wrap; /* Permite que los elementos se envuelvan a la siguiente línea */
+  gap: 10px; /* Espacio entre los botones */
+}
+
+/* Estilos adicionales para los botones (opcional) */
+.contenedores_buttons button {
+  flex: 1 1 auto; /* Hace que los botones sean flexibles */
+  min-width: 100px; /* Ancho mínimo de los botones */
+  padding: 10px; /* Espaciado interno de los botones */
+  margin: 5px; /* Espaciado externo de los botones */
+}
+
+/* Media query para pantallas pequeñas */
+@media (max-width: 600px) {
+  .contenedores_buttons {
+    flex-direction: column; /* Dispone los botones en una columna en pantallas pequeñas */
+  }
+}

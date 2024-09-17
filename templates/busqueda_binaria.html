@@ -1,0 +1,179 @@
+{% extends "base.html" %} {% block title %}Menu principal{% endblock %} {% block
+header %}{{ super() }}{% endblock %} {% block content %}
+
+<head>
+  <link
+    rel="stylesheet"
+    type="text/css"
+    href="{{ url_for('static', filename='css/forms.css') }}"
+  />
+</head>
+<style>
+  #data-output {
+    background-color: #bcbcbc;
+    border-radius: 10px;
+  }
+  #busqueda_lineal_binaria {
+    width: 100%;
+    color: var(--color-primary);
+    background-color: var(--color-light);
+    margin-left: 0;
+  }
+  #progress-bar {
+    width: 0;
+    height: 20px;
+    background-color: #4caf50;
+  }
+  #progress-container {
+    width: 100%;
+    background-color: #f3f3f3;
+    margin-top: 10px;
+    display: none;
+  }
+  #result-container {
+    margin-top: 20px;
+  }
+
+  .highlight-green {
+    color: green;
+    font-weight: bold;
+  }
+
+  .highlight-red {
+    color: red;
+    font-weight: bold;
+  }
+</style>
+<center><h1>Busqueda Binaria</h1></center>
+
+<div id="div_info" class="infos">
+  <div class="info__icon">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      viewBox="0 0 24 24"
+      height="24"
+      fill="none"
+    >
+      <path
+        fill="#393a37"
+        d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z"
+      ></path>
+    </svg>
+  </div>
+  <div class="info__title">
+    Recuerde no Ingresar más de 200 elementos porque tardará mucho, ademas
+    separar los datos por comas o espacios
+  </div>
+  <div id="close_info" class="info__close">
+    <svg
+      height="20"
+      viewBox="0 0 20 20"
+      width="20"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="m15.8333 5.34166-1.175-1.175-4.6583 4.65834-4.65833-4.65834-1.175 1.175 4.65833 4.65834-4.65833 4.6583 1.175 1.175 4.65833-4.6583 4.6583 4.6583 1.175-1.175-4.6583-4.6583z"
+        fill="#393a37"
+      ></path>
+    </svg>
+  </div>
+</div>
+<a class="button_volver" href="/busqueda_lineal_binaria"
+  ><svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="2"
+    style="width: 20px; height: 20px"
+  >
+    <path
+      d="M8.83 6a30.23 30.23 0 0 0-5.62 5.406A.949.949 0 0 0 3 12m5.83 6a30.233 30.233 0 0 1-5.62-5.406A.949.949 0 0 1 3 12m0 0h18"
+    ></path></svg
+  >Volver</a
+>
+
+<div class="container_form">
+  <h1>Ingresar datos</h1>
+  <form id="linear-search-form">
+    <label for="array">Ingrese el array (separado por comas):</label>
+    <textarea id="array" name="array" rows="4" required></textarea>
+    <label for="target">Ingrese el elemento a buscar:</label>
+    <input type="text" id="target" name="target" required />
+    <br />
+    <br />
+    <button type="button" id="binary-search-button">Buscar Binaramente</button>
+  </form>
+  <div id="result-container" style="display: none">
+    <h2>Resultado</h2>
+    <p id="array-result"></p>
+    <p id="position-result"></p>
+    <p id="time-result"></p>
+  </div>
+</div>
+
+<script>
+  var close_info = document.getElementById("close_info");
+  var div_info = document.getElementById("div_info");
+
+  setTimeout(function () {
+    div_info.style.display = "none";
+  }, 5000);
+
+  close_info.addEventListener("click", () => {
+    div_info.style.display = "none";
+  });
+</script>
+<script>
+  async function performSearch(url) {
+    const array = document.getElementById("array").value.split(",").map(Number);
+    const target = Number(document.getElementById("target").value);
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ array, target }),
+    });
+    const data = await response.json();
+    const resultContainer = document.getElementById("result-container");
+    const arrayResult = document.getElementById("array-result");
+    const positionResult = document.getElementById("position-result");
+    const timeResult = document.getElementById("time-result");
+
+    if (data.indexes.length > 0) {
+      arrayResult.innerHTML = data.array
+        .map((item, index) => {
+          if (data.indexes.includes(index)) {
+            return `<span class="highlight-green">${item}</span>`;
+          }
+          return item;
+        })
+        .join(", ");
+      positionResult.textContent = `El elemento buscado está en la(s) posición(es) N° ${data.indexes.join(
+        ", "
+      )}`;
+      positionResult.textContent += `\nCantidad de coincidencias: ${data.indexes.length}`;
+    } else {
+      arrayResult.innerHTML = data.array
+        .map((item) => `<span class="highlight-red">${item}</span>`)
+        .join(", ");
+      positionResult.textContent = "Elemento no encontrado";
+    }
+
+    timeResult.textContent = `Tiempo de búsqueda: ${data.time_elapsed.toFixed(
+      6
+    )} segundos`;
+
+    resultContainer.style.display = "block";
+  }
+  document
+    .getElementById("binary-search-button")
+    .addEventListener("click", function () {
+      performSearch("/binary_search");
+    });
+</script>
+{% endblock %} {% block footer %}{{ super() }}{% endblock %}

@@ -1,0 +1,221 @@
+{% extends "base.html" %} {% block title %}Menu principal{% endblock %} {% block
+    header %}{{ super() }}{% endblock %} {% block content %}
+    
+    <head>
+      <link
+        rel="stylesheet"
+        type="text/css"
+        href="{{ url_for('static', filename='css/forms.css') }}"
+      />
+    </head>
+    <style>
+      #radix {
+        width: 100%;
+        color: var(--color-primary);
+        background-color: var(--color-light);
+        margin-left: 0;
+      }
+      #progress-bar {
+        width: 0;
+        height: 20px;
+        background-color: #4caf50;
+      }
+      #progress-container {
+        width: 100%;
+        background-color: #f3f3f3;
+        margin-top: 10px;
+        display: none;
+      }
+    </style>
+    <center><h1>Radix sort</h1></center>
+    
+    <div id="div_info" class="infos">
+      <div class="info__icon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          viewBox="0 0 24 24"
+          height="24"
+          fill="none"
+        >
+          <path
+            fill="#393a37"
+            d="m12 1.5c-5.79844 0-10.5 4.70156-10.5 10.5 0 5.7984 4.70156 10.5 10.5 10.5 5.7984 0 10.5-4.7016 10.5-10.5 0-5.79844-4.7016-10.5-10.5-10.5zm.75 15.5625c0 .1031-.0844.1875-.1875.1875h-1.125c-.1031 0-.1875-.0844-.1875-.1875v-6.375c0-.1031.0844-.1875.1875-.1875h1.125c.1031 0 .1875.0844.1875.1875zm-.75-8.0625c-.2944-.00601-.5747-.12718-.7808-.3375-.206-.21032-.3215-.49305-.3215-.7875s.1155-.57718.3215-.7875c.2061-.21032.4864-.33149.7808-.3375.2944.00601.5747.12718.7808.3375.206.21032.3215.49305.3215.7875s-.1155.57718-.3215.7875c-.2061.21032-.4864.33149-.7808.3375z"
+          ></path>
+        </svg>
+      </div>
+      <div class="info__title">
+        Recuerde no generar más de 200 elementos porque tardará mucho
+      </div>
+      <div id="close_info" class="info__close">
+        <svg
+          height="20"
+          viewBox="0 0 20 20"
+          width="20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m15.8333 5.34166-1.175-1.175-4.6583 4.65834-4.65833-4.65834-1.175 1.175 4.65833 4.65834-4.65833 4.6583 1.175 1.175 4.65833-4.6583 4.6583 4.6583 1.175-1.175-4.6583-4.6583z"
+            fill="#393a37"
+          ></path>
+        </svg>
+      </div>
+    </div>
+    <a class="button_volver" href="radix"
+      ><svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        style="width: 20px; height: 20px"
+      >
+        <path
+          d="M8.83 6a30.23 30.23 0 0 0-5.62 5.406A.949.949 0 0 0 3 12m5.83 6a30.233 30.233 0 0 1-5.62-5.406A.949.949 0 0 1 3 12m0 0h18"
+        ></path></svg
+      >Volver</a
+    >
+    
+    <div class="container_form">
+      <h1>Crear datos aleatorios</h1>
+      <form id="upload-form" action="/upload_radix_gen_ale" method="POST">
+        <div class="form-group">
+          <label for="tipo_datos">Selecciona el tipo de dato</label>
+          <select required name="tipo_datos">
+            <option value="numeros_enteros">Numeros enteros</option>
+            <option value="numeros_decimales">Numeros decimales</option>
+            <option value="nombres">Nombres</option>
+            <option value="palabras">Palabras</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="cantidad_date">Ingrese la cantidad de datos</label>
+          <input type="number" name="cantidad_date" required />
+        </div>
+        <button type="submit">Crear</button>
+      </form>
+      <div id="generated-data" style="display: none">
+        <h2>Datos Generados</h2>
+        <textarea
+          id="data-output"
+          rows="10"
+          cols="50"
+          style="max-width: 300px"
+        ></textarea>
+        <h2>Datos Ordenados</h2>
+        <textarea
+          id="sorted-output"
+          rows="10"
+          cols="50"
+          style="max-width: 300px"
+        ></textarea>
+        <div id="progress-container">
+          <div id="progress-bar"></div>
+        </div>
+        <button id="sort-button">Ordenar</button>
+        <p id="sort-time" style="display: none">
+          Tiempo de ordenación: <span id="time-elapsed"></span> segundos
+        </p>
+        <a
+          target="_blank"
+          id="download-link"
+          class="Download-button"
+          style="display: none"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="16"
+            width="20"
+            viewBox="0 0 640 512"
+          >
+            <path
+              d="M144 480C64.5 480 0 415.5 0 336c0-62.8 40.2-116.2 96.2-135.9c-.1-2.7-.2-5.4-.2-8.1c0-88.4 71.6-160 160-160c59.3 0 111 32.2 138.7 80.2C409.9 102 428.3 96 448 96c53 0 96 43 96 96c0 12.2-2.3 23.8-6.4 34.6C596 238.4 640 290.1 640 352c0 70.7-57.3 128-128 128H144zm79-167l80 80c9.4 9.4 24.6 9.4 33.9 0l80-80c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-39 39V184c0-13.3-10.7-24-24-24s-24 10.7-24 24V318.1l-39-39c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9z"
+              fill="white"
+            ></path>
+          </svg>
+          <span>Descargar en txt </span>
+        </a>
+      </div>
+    </div>
+    
+    <script>
+      document
+        .getElementById("upload-form")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const formData = new FormData(e.target);
+          const response = await fetch("/upload_radix_gen_ale", {
+            method: "POST",
+            body: formData,
+          });
+          const data = await response.json();
+          if (data.success) {
+            document.getElementById("data-output").value =
+              data.generated_data.join(", ");
+            document.getElementById("sorted-output").value = "";
+            document.getElementById("download-link").style.display = "none";
+            document.getElementById("generated-data").style.display = "block";
+          }
+        });
+    
+      document
+        .getElementById("sort-button")
+        .addEventListener("click", async function () {
+          const dataOutput = document.getElementById("data-output").value;
+          if (!dataOutput) return;
+    
+          const dataArray = dataOutput
+            .split(", ")
+            .map((item) => (isNaN(item) ? item : Number(item)));
+          const totalItems = dataArray.length;
+    
+          const progressBar = document.getElementById("progress-bar");
+          const progressContainer = document.getElementById("progress-container");
+          const startTime = Date.now();
+          progressContainer.style.display = "block";
+    
+          let progress = 0;
+          function updateProgress() {
+            progress++;
+            progressBar.style.width = (progress / totalItems) * 100 + "%";
+            if (progress < totalItems) {
+              setTimeout(updateProgress, 10);
+            }
+          }
+          updateProgress();
+    
+          const response = await fetch("/ordenacion_radix_datos_aleatorios", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ data: dataArray }),
+          });
+          const data = await response.json();
+          if (data.success) {
+            const endTime = Date.now();
+            const timeElapsed = ((endTime - startTime) / 1000).toFixed(2);
+    
+            document.getElementById("sorted-output").value =
+              data.sorted_data.join(", ");
+            document.getElementById("download-link").href = data.download_url;
+            document.getElementById("download-link").style.display = "block";
+            document.getElementById("sort-time").style.display = "block";
+            document.getElementById("time-elapsed").textContent = timeElapsed;
+          }
+        });
+      var close_info = document.getElementById("close_info");
+      var div_info = document.getElementById("div_info");
+    
+      setTimeout(function () {
+        div_info.style.display = "none";
+      }, 5000);
+    
+      close_info.addEventListener("click", () => {
+        div_info.style.display = "none";
+      });
+    </script>
+    
+    {% endblock %} {% block footer %}{{ super() }}{% endblock %}

@@ -1,0 +1,166 @@
+@app.route('/archivos_insertion_sort/')
+def list_archivos_insertion_sort():
+    # Lista de archivos en la carpeta archivos_burble_sort
+    files = os.listdir(app.config['carpeta_insertion'])
+    return render_template('lista_archivos.html', files=files)
+
+@app.route('/archivos_insertion_sort/<filename>')
+def download_file_insert(filename):
+    # Descargar el archivo seleccionado
+    return send_from_directory(app.config['carpeta_insertion'], filename)
+
+@app.route('/insertion')
+def insertion():
+    return render_template('insertion.html')  
+   
+@app.route('/insertion_teori')
+def insertion_teori():
+    return render_template('insertion_teori.html')   
+@app.route('/insertion_archi')
+def insertion_archi():
+    return render_template('insertion_archi.html')
+  
+@app.route('/upload_insertion_archiv', methods=['POST'])
+def upload_insertion_archiv():
+    if 'file' not in request.files:
+        return redirect(request.url)
+
+    file = request.files['file']
+
+    if file.filename == '':
+        return redirect(request.url)
+
+    if file:
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config['carpeta_archivos_subidos'], filename)
+        file.save(filepath)
+
+        filename, file_extension = os.path.splitext(file.filename)
+        numbers = []
+
+        if file_extension in ['.txt', '.csv']:
+            with open(filepath, 'r') as f:
+                data = f.read()
+            numbers = list(map(int, data.split(',')))
+
+        elif file_extension == '.xlsx':
+            wb = load_workbook(filepath)
+            ws = wb.active
+            for row in ws.iter_rows(values_only=True):
+                for cell in row:
+                    if isinstance(cell, int):
+                        numbers.append(cell)
+        else:
+            return jsonify({'error': 'Unsupported file type'}), 400
+
+        sorting_thread = threading.Thread(target=insertion_sort, args=(numbers,))
+        sorting_thread.start()
+        sorting_thread.join()
+
+        sorted_filename = generate_unique_filename(app.config['carpeta_burble'], f"Insert_sort_{filename}", file_extension[1:])
+        sorted_filepath = os.path.join(app.config['carpeta_burble'], sorted_filename)
+
+        if file_extension in ['.txt', '.csv']:
+            with open(sorted_filepath, 'w') as f:
+                f.write(','.join(map(str, numbers)))
+
+        elif file_extension == '.xlsx':
+            wb = Workbook()
+            ws = wb.active
+            for idx, num in enumerate(numbers, start=1):
+                ws.cell(row=idx, column=1, value=num)
+            wb.save(sorted_filepath)
+
+        return jsonify({
+            'success': True,
+            'download_url': url_for('download_file', filename=sorted_filename)
+        })
+
+@app.route('/progress_insertion')
+def progress_insertion():
+    def generate():
+        while progress_insertion_sort_arr['progress_insertion_sort'] < 100:
+            yield f"data: {progress_insertion_sort_arr['progress_insertion_sort']}\n\n"
+            time.sleep(1)
+        yield f"data: 100\n\n"
+    return Response(generate(), mimetype='text/event-stream')
+
+@app.route('/insertion_gen_ale')
+def insertion_gen_ale():
+    return render_template('insertion_gen_ale.html')
+
+@app.route('/upload_insert_gen_ale', methods=['POST'])
+def upload_insert_gen_ale():
+    tipo_datos = request.form['tipo_datos']
+    cantidad = int(request.form['cantidad_date'])
+
+    if tipo_datos == 'numeros_enteros':
+        generated_data = [random.randint(0, 100) for _ in range(cantidad)]
+    elif tipo_datos == 'numeros_decimales':
+        generated_data = [round(random.uniform(0, 100), 2) for _ in range(cantidad)]
+    elif tipo_datos == 'nombres':
+        generated_data = [fake.first_name() for _ in range(cantidad)]
+    elif tipo_datos == 'palabras':
+        generated_data = [fake.word() for _ in range(cantidad)]
+    else:
+        return jsonify({'error': 'Unsupported data type'}), 400
+
+    return jsonify({'success': True, 'generated_data': generated_data})
+
+@app.route('/ordenacion_insert_datos_aleatorios', methods=['POST'])
+def ordenacion_insert_datos_aleatorios():
+    data = request.json['data']
+    # Ordenar los datos usando el algoritmo de ordenación burbuja
+    sorted_data = insertion_sort(data)
+
+    # Generar un nombre de archivo único
+    base_filename = 'datos_aletorios_ordenados_insert'
+    sorted_filename = generate_unique_filename(app.config['carpeta_insertion'], base_filename, 'txt')
+    sorted_filepath = os.path.join(app.config['carpeta_insertion'], sorted_filename)
+
+    # Guardar los datos ordenados en un archivo
+    with open(sorted_filepath, 'w') as f:
+        f.write(','.join(map(str, sorted_data)))
+
+    # Devolver la respuesta con los datos ordenados y la URL de descarga
+    return jsonify({'success': True, 'sorted_data': sorted_data, 'download_url': url_for('download_file', filename=sorted_filename)})
+
+
+@app.route('/insertion_manual')
+def insertion_manual():
+    return render_template('insertion_manual.html')   
+
+@app.route('/insertion_manual_form', methods=['POST'])
+def insertion_manual_form():
+    tipo_datos = request.form['tipo_datos']
+    datos_a_ordenar = request.form['date_manu']
+    separador = request.form['separador']
+
+    if separador == 'comas':
+        datos_list = datos_a_ordenar.split(',')
+    elif separador == 'espacios':
+        datos_list = datos_a_ordenar.split()
+
+    if tipo_datos == 'numeros_enteros':
+        datos_list = list(map(int, datos_list))
+    elif tipo_datos == 'palabras':
+        datos_list = list(map(str, datos_list))
+
+    sorting_thread = threading.Thread(target=insertion_sort, args=(datos_list,))
+    sorting_thread.start()
+    sorting_thread.join()
+
+    sorted_list = datos_list
+    sorted_data = ', '.join(map(str, sorted_list)) if separador == 'comas' else ' '.join(map(str, sorted_list))
+    # Generar un nombre de archivo único
+    base_filename = 'datos_manualmente_ordenados'
+    sorted_filename = generate_unique_filename(app.config['carpeta_burble'], base_filename, 'txt')
+    sorted_filepath = os.path.join(app.config['carpeta_burble'], sorted_filename)
+
+    with open(sorted_filepath, 'w') as f:
+        f.write(sorted_data)
+
+    return jsonify({
+        'sorted_data': sorted_data,
+        'download_url': url_for('download_file', filename=sorted_filename)
+    })
